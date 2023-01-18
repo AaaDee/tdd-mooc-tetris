@@ -1,9 +1,11 @@
 export class RotatingShape {
   width;
   grid;
+  orientations;
+  rotated;
   
 
-  constructor(form) {
+  constructor(form, orientations = 4, rotated = false) {
     this.grid = [];
     let row = [];
     for (const char of form) {
@@ -19,6 +21,8 @@ export class RotatingShape {
     }
     this.grid.push(row)
     this.width = this.grid[0].length;
+    this.orientations = orientations;
+    this.rotated = rotated;
   }
 
   toString() {
@@ -33,18 +37,59 @@ export class RotatingShape {
   }
 
   rotateRight() {
-    let updatedGrid = [];
-    for (let i = 0; i < this.width; i++) {
-      updatedGrid.push(Array(this.width));
+    if (this.orientations === 1) {
+      return this;
     }
+
+    if (this.orientations === 2 && this.rotated) {
+      return this.rotateLeft();
+    }
+
+    let updatedGrid = initializeGrid(this.width);
+    
     for (let i = 0; i < this.width; i++) {
       for (let j = 0; j < this.width; j++) {
         updatedGrid[j][this.width-1-i] = this.grid[i][j];
       }
     }
 
-    let ans = ''
-    updatedGrid.forEach(row => {
+    let ans = getShapeFromGrid(updatedGrid);
+    return new RotatingShape(ans, this.orientations, !this.rotated);
+  }
+
+  rotateLeft() {
+    if (this.orientations === 1) {
+      return this;
+    }
+
+    if (this.orientations === 2 && !this.rotated) {
+      return this.rotateRight();
+    }
+    
+    let updatedGrid = initializeGrid(this.width);
+
+    for (let i = 0; i < this.width; i++) {
+      for (let j = 0; j < this.width; j++) {
+        updatedGrid[this.width - 1 - j][i] = this.grid[i][j];
+      }
+    }
+
+    let ans = getShapeFromGrid(updatedGrid);
+    return new RotatingShape(ans, this.orientations, !this.rotated);
+  }
+}
+
+function initializeGrid(width) {
+  let grid = [];
+  for (let i = 0; i < width; i++) {
+    grid.push(Array(width));
+  }
+  return grid;
+} 
+
+function getShapeFromGrid(grid) {
+  let ans = ''
+    grid.forEach(row => {
       row.forEach(point => {
         ans += point;
       })
@@ -52,10 +97,5 @@ export class RotatingShape {
     })
 
     ans = ans.substring(0, ans.length - 1);
-    return new RotatingShape(ans);
-  }
-
-  rotateLeft() {
-    return this.rotateRight().rotateRight().rotateRight();
-  }
+    return ans;
 }
