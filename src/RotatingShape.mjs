@@ -77,6 +77,14 @@ export class RotatingShape {
     let ans = getShapeFromGrid(updatedGrid);
     return new RotatingShape(ans, this.orientations, !this.rotated);
   }
+
+  getGrid() {
+    return this.grid
+  }
+
+  getWidth() {
+    return this.width
+  }
 }
 
 function initializeGrid(width) {
@@ -85,7 +93,7 @@ function initializeGrid(width) {
     grid.push(Array(width));
   }
   return grid;
-} 
+}
 
 function getShapeFromGrid(grid) {
   let ans = ''
