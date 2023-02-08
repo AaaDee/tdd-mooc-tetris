@@ -1,4 +1,5 @@
 import { Point } from "./Point.mjs";
+import _  from "lodash"
 
 export class Board {
   width;
@@ -22,9 +23,16 @@ export class Board {
 
   }
 
+
   toString() {
+    const grid = _.cloneDeep(this.grid)
+    
+    if (this.hasFalling()){
+      this.drawOnGrid(grid)
+    }
+
     let ans = ''
-    this.grid.forEach(row => {
+    grid.forEach(row => {
       row.forEach(point => {
         ans += point;
       })
@@ -44,8 +52,6 @@ export class Board {
     const startI = 0;
     const startJ = Math.floor((this.width - itemWidth) / 2);
     this.fallingPosition = new Point(startI, startJ) 
-    
-    this.drawShape()
   }
     
 
@@ -59,58 +65,72 @@ export class Board {
     }
 
     if (!this.canFall()) {
+      this.drawShape()
       this.fallingPosition = undefined;
       return;
     } 
-  
-    const startI = this.fallingPosition.getX();
-    const startJ = this.fallingPosition.getY();
-    this.fallingPosition = new Point(startI + 1, startJ)  
-
-    this.drawShape()
-
+    
+    this.moveDown()
   }
 
   canFall() {
-    const startX = this.fallingPosition.getX();
-    const startY = this.fallingPosition.getY();
+    const { x, y } = this.fallingPosition.getXY();
+    this.fallingPosition = new Point(x + 1, y);
+    const ans = this.isValid();
+    this.fallingPosition = new Point(x, y);
+    return ans;
+  }
+
+  isValid() {
+    const { x, y } = this.fallingPosition.getXY();
     const width = this.fallingItem.getWidth()
 
     for (let i = 0; i < width; i++) {
       for (let j = 0; j < width; j++) {
         const point = this.fallingItem.getGrid()[i][j];
-
         if (point !== '.') {
-          if (this.isAtBottom(startX +1)) {
+          const xPos = i + x;
+          const yPos = j + y;
+          if (this.isOutOfBounds(xPos, yPos)) {
             return false;
           }
-
-          if (this.shouldHaveEmptyBelow(i, j)) {
-            if (!this.hasEmptyBelow(i + startX, j + startY)) {
-              return false;
-            }
+          if (this.grid[xPos][yPos] !== '.') {
+            return false;
           }
         }
       }
     }
 
     return true;
+
+  }
+
+  isOutOfBounds(x, y) {
+    if (x < 0) return true;
+    if (y < 0) return true;
+    if (x >= this.height) return true
+    if (y >= this.width) return true;
+    return false;
   }
 
   drawShape() {
+    this.drawOnGrid(this.grid)
+  }
+    
+  drawOnGrid(grid) {
     const startI = this.fallingPosition.getX();
     const startJ = this.fallingPosition.getY();
 
-    const shapeGrid = this.fallingItem.getGrid();
+    const itemGrid = this.fallingItem.getGrid();
     const itemWidth = this.fallingItem.getWidth();
 
     for (let i = itemWidth - 1; i >= 0 ; i--) {
       for (let j = itemWidth - 1; j >= 0; j--) {
         if (i + startI < this.height) {
-          if (shapeGrid[i][j] !== '.') {
-            this.grid[i + startI][j + startJ] = shapeGrid[i][j]
+          if (itemGrid[i][j] !== '.') {
+            grid[i + startI][j + startJ] = itemGrid[i][j]
             if (i + startI > 0) {
-              this.grid[i + startI - 1][j + startJ] = '.'
+              grid[i + startI - 1][j + startJ] = '.'
             }
           }
         }
@@ -118,17 +138,30 @@ export class Board {
     }
   }
 
-  isAtBottom(x) {
-    return x === this.height - 1;
+
+  moveLeft() {
+    const { x, y } = this.fallingPosition.getXY();
+    this.fallingPosition = new Point(x, y - 1);
+    if (!this.isValid()) {
+      this.fallingPosition = new Point(x, y);
+    } 
   }
 
-  shouldHaveEmptyBelow(i, j) {
-    if (i === this.fallingItem.getWidth() - 1) return true;
-    if (this.fallingItem.getGrid()[i+1][j] === '.') return true;
-    return false;
+  moveRight() {
+    const { x, y } = this.fallingPosition.getXY();
+    this.fallingPosition = new Point(x, y + 1);
+    if (!this.isValid()) {
+      this.fallingPosition = new Point(x, y);
+    } 
   }
 
-  hasEmptyBelow(x, y) {
-    return this.grid[x + 1][y] === '.'
+  moveDown() {
+    const { x, y } = this.fallingPosition.getXY();
+    this.fallingPosition = new Point(x + 1, y);
+    if (!this.isValid()) {
+      this.fallingPosition = new Point(x, y);
+    }  
   }
+
+
 }

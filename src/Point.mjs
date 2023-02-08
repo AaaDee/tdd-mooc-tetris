@@ -14,4 +14,12 @@ export class Point {
   getY() {
     return this.y;
   }
+
+  getXY() {
+    return {
+      x: this.x,
+      y: this.y 
+    }
+  }
+
 }
