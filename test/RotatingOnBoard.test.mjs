@@ -1,14 +1,14 @@
 
 import { expect } from "chai";
 import { Board } from "../src/Board.mjs";
-import { Tetromino } from "../src/Tetromino.mjs";
+import { TestTetromino } from "../src/TestTetromino.mjs";
 import { fallToBottom } from "./utils.mjs"
 
 describe("Rotating", () => {
   let board;
   beforeEach(() => {
     board = new Board(10, 6);
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(TestTetromino.T_SHAPE);
   });
 
   it("Can be rotated left", () => {
@@ -72,9 +72,9 @@ describe("Rotating when blocked", () => {
   let board;
   beforeEach(() => {
     board = new Board(10, 6);
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(TestTetromino.T_SHAPE);
     fallToBottom(board)
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(TestTetromino.T_SHAPE);
     board.moveDown();
     board.moveDown();
   });
@@ -112,7 +112,7 @@ describe("Wall kick", () => {
   });
 
   it("kicked from left wall on left rotation", () => {
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(TestTetromino.T_SHAPE);
     board.rotateRight()
     for (let i = 0; i < 5; i++) {
       board.moveLeft()
@@ -129,7 +129,7 @@ describe("Wall kick", () => {
   });
 
   it("kicked from right wall on right rotation", () => {
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(TestTetromino.T_SHAPE);
     board.rotateLeft()
     for (let i = 0; i < 5; i++) {
       board.moveRight()
@@ -146,7 +146,7 @@ describe("Wall kick", () => {
   });
 
   it("kicked from left wall on right rotation", () => {
-    board.drop(Tetromino.I_SHAPE);
+    board.drop(TestTetromino.I_SHAPE);
     board.rotateRight()
     for (let i = 0; i < 3; i++) {
       board.moveLeft()
@@ -163,7 +163,7 @@ describe("Wall kick", () => {
   });
 
   it("kicked from right wall on left rotation", () => {
-    board.drop(Tetromino.I_SHAPE);
+    board.drop(TestTetromino.I_SHAPE);
     board.rotateLeft()
     for (let i = 0; i < 5; i++) {
       board.moveRight()

@@ -3,11 +3,16 @@ export class RotatingShape {
   grid;
   orientations;
   rotated;
+  orientation;
+  rotations;
   
 
-  constructor(form, orientations = 4, rotated = false) {
+  constructor(rotations, orientation = 0, rotated = false) {
     this.grid = [];
+    this.orientation = orientation;
+    this.rotations = rotations;
     let row = [];
+    const form = rotations[orientation];
     for (const char of form) {
       if (char === '\n') {
         this.grid.push(row);
@@ -21,7 +26,6 @@ export class RotatingShape {
     }
     this.grid.push(row)
     this.width = this.grid[0].length;
-    this.orientations = orientations;
     this.rotated = rotated;
   }
 
@@ -37,45 +41,19 @@ export class RotatingShape {
   }
 
   rotateRight() {
-    if (this.orientations === 1) {
-      return this;
+    let newOrientation = this.orientation + 1;
+    if (newOrientation === this.rotations.length) {
+      newOrientation = 0;
     }
-
-    if (this.orientations === 2 && this.rotated) {
-      return this.rotateLeft();
-    }
-
-    let updatedGrid = initializeGrid(this.width);
-    
-    for (let i = 0; i < this.width; i++) {
-      for (let j = 0; j < this.width; j++) {
-        updatedGrid[j][this.width-1-i] = this.grid[i][j];
-      }
-    }
-
-    let ans = getShapeFromGrid(updatedGrid);
-    return new RotatingShape(ans, this.orientations, !this.rotated);
+    return new RotatingShape(this.rotations, newOrientation, !this.rotated);
   }
 
   rotateLeft() {
-    if (this.orientations === 1) {
-      return this;
+   let newOrientation = this.orientation - 1;
+    if (newOrientation === - 1) {
+      newOrientation = this.rotations.length - 1;
     }
-
-    if (this.orientations === 2 && !this.rotated) {
-      return this.rotateRight();
-    }
-    
-    let updatedGrid = initializeGrid(this.width);
-
-    for (let i = 0; i < this.width; i++) {
-      for (let j = 0; j < this.width; j++) {
-        updatedGrid[this.width - 1 - j][i] = this.grid[i][j];
-      }
-    }
-
-    let ans = getShapeFromGrid(updatedGrid);
-    return new RotatingShape(ans, this.orientations, !this.rotated);
+    return new RotatingShape(this.rotations, newOrientation, !this.rotated);
   }
 
   getGrid() {

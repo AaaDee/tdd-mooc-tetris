@@ -1,14 +1,14 @@
 
 import { expect } from "chai";
 import { Board } from "../src/Board.mjs";
-import { Tetromino } from "../src/Tetromino.mjs";
+import { TestTetromino } from "../src/TestTetromino.mjs";
 import { fallToBottom } from "./utils.mjs";
 
 describe("Moving a just dropped tetromino", () => {
   let board;
   beforeEach(() => {
     board = new Board(10, 6);
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(TestTetromino.T_SHAPE);
   });
 
   it("Can be moved left", () => {
@@ -52,7 +52,7 @@ describe("Moving beyond boundaries", () => {
   let board;
   beforeEach(() => {
     board = new Board(10, 6);
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(TestTetromino.T_SHAPE);
   });
 
   it("Cannot move beyond left boundary", () => {
@@ -102,9 +102,9 @@ describe("Moving across another block", () => {
   let board;
   beforeEach(() => {
     board = new Board(10, 6);
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(TestTetromino.T_SHAPE);
     fallToBottom(board)
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(TestTetromino.T_SHAPE);
   });
 
   it("Cannot move left through another block", () => {

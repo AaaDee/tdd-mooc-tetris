@@ -1,7 +1,7 @@
 
 import { expect } from "chai";
 import { Board } from "../src/Board.mjs";
-import { Tetromino } from "../src/Tetromino.mjs";
+import { TestTetromino } from "../src/TestTetromino.mjs";
 import { fallToBottom } from "./utils.mjs";
 
 describe("Falling tetrominoes", () => {
@@ -11,7 +11,7 @@ describe("Falling tetrominoes", () => {
   });
 
   it("start from the top middle", () => {
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(TestTetromino.T_SHAPE);
 
     expect(board.toString()).to.equalShape(
       `....T.....
@@ -24,7 +24,7 @@ describe("Falling tetrominoes", () => {
   });
 
   it("stop when they hit the bottom", () => {
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(TestTetromino.T_SHAPE);
     fallToBottom(board);
 
     expect(board.toString()).to.equalShape(
@@ -38,9 +38,9 @@ describe("Falling tetrominoes", () => {
   });
 
   it("stop when they land on another block", () => {
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(TestTetromino.T_SHAPE);
     fallToBottom(board);
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(TestTetromino.T_SHAPE);
     fallToBottom(board);
 
     expect(board.toString()).to.equalShape(
