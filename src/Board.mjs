@@ -212,4 +212,52 @@ export class Board {
       }
     }
   }
+
+  setBoard(board) {
+    this.grid = [];
+    let row = [];
+
+    for (const char of board) {
+      if (char === '\n') {
+        this.grid.push(row);
+        row = [];
+      } else if (char === ' ') {
+        // do nothing
+      }
+        else {
+        row.push(char);
+      }
+    }
+    this.grid.push(row)
+  }
+
+  clear() {
+    for (let i = this.height - 1; i >= 0; i--) {
+      const row = this.grid[i];
+      if (isComplete(row)) {
+        this.clearRow(i);
+        i += 1;
+      }
+
+    }
+  }
+
+  clearRow(rowIndex) {
+    setRowCleared(this.grid[rowIndex])
+    for (let i = rowIndex; i > 0; i--) {
+      for (let j = 0; j < this.width; j++) {
+        this.grid[i][j] = this.grid[i - 1][j];
+      }
+    }
+  }
+}
+
+function isComplete(row) {
+  return row.every(point => point !== '.');
+}
+
+function setRowCleared(row) {
+  for (let i = 0; i < row.length; i++) {
+    row[i] = '.'
+  }
 }
