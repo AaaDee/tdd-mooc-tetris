@@ -91,7 +91,7 @@ export class Board {
         if (point !== '.') {
           const xPos = i + x;
           const yPos = j + y;
-          if (this.isOutOfBounds(xPos, yPos)) {
+          if (this.isPointOutOfBounds(xPos, yPos)) {
             return false;
           }
           if (this.grid[xPos][yPos] !== '.') {
@@ -105,7 +105,7 @@ export class Board {
 
   }
 
-  isOutOfBounds(x, y) {
+  isPointOutOfBounds(x, y) {
     if (x < 0) return true;
     if (y < 0) return true;
     if (x >= this.height) return true
@@ -113,10 +113,26 @@ export class Board {
     return false;
   }
 
+  isFallingItemOutOfBounds() {
+    const width = this.fallingItem.getWidth();
+    const { x, y } = this.fallingPosition.getXY();
+    for (let i = 0; i < width; i++) {
+      for (let j = 0; j < width; j++) {
+        const point = this.fallingItem.getGrid()[i][j];
+        if (point !== '.') {
+          if (this.isPointOutOfBounds(x+i, y+j)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
   drawShape() {
     this.drawOnGrid(this.grid)
   }
-    
+
   drawOnGrid(grid) {
     const startI = this.fallingPosition.getX();
     const startJ = this.fallingPosition.getY();
@@ -162,6 +178,38 @@ export class Board {
       this.fallingPosition = new Point(x, y);
     }  
   }
+  
+  rotateLeft() {
+    if (!this.hasFalling()) {
+      return;
+    }
 
+    this.fallingItem = this.fallingItem.rotateLeft();
+    this.wallKickIfNecessary();
 
+    if (!this.isValid()) {
+      this.fallingItem = this.fallingItem.rotateRight();
+    }
+  }
+
+  rotateRight() {
+    if (!this.hasFalling()) {
+      return;
+    }
+    this.fallingItem = this.fallingItem.rotateRight();
+    this.wallKickIfNecessary();
+    
+    if (!this.isValid()) {
+      this.fallingItem = this.fallingItem.rotateLeft();
+    }
+  }
+
+  wallKickIfNecessary() {
+    if (this.isFallingItemOutOfBounds()) {
+      this.moveLeft();
+      if (!this.isValid()) {
+        this.moveRight();
+      }
+    }
+  }
 }
