@@ -1,5 +1,7 @@
 import { Point } from "./Point.mjs";
 import _  from "lodash"
+import { DummyScorer } from "./DummyScorer.mjs";
+
 
 export class Board {
   width;
@@ -7,11 +9,15 @@ export class Board {
   grid;
   fallingPosition;
   fallingItem;
+  scorer;
+  level;
 
   constructor(width, height) {
     this.width = width;
     this.height = height;
+    this.level = 0;
     this.grid = [];
+    this.scorer =  new DummyScorer();
 
     for (let i = 0; i < height; i++ ) {
       let row = [];
@@ -231,15 +237,24 @@ export class Board {
     this.grid.push(row)
   }
 
+  setScorer(scorer) {
+    this.scorer = scorer;
+  }
+  setLevel(level) {
+    this.level = level;
+  }
+
   clear() {
+    let clears = 0;
     for (let i = this.height - 1; i >= 0; i--) {
       const row = this.grid[i];
       if (isComplete(row)) {
         this.clearRow(i);
         i += 1;
+        clears++;
       }
-
     }
+    this.scorer.update(clears, this.level);
   }
 
   clearRow(rowIndex) {
