@@ -112,3 +112,18 @@ export class Tetromino {
    ]
   );
 }
+
+export const TetrominoNames = ['I', 'O', 'J', 'L', 'S', 'Z', 'T'];
+
+export function getTetrominoFromName(name) {
+  const mappings = {
+    I: Tetromino.I_SHAPE,
+    O: Tetromino.O_SHAPE,
+    L: Tetromino.L_SHAPE,
+    J: Tetromino.J_SHAPE,
+    S: Tetromino.S_SHAPE,
+    Z: Tetromino.Z_SHAPE,
+    T: Tetromino.T_SHAPE 
+  }
+  return mappings[name]
+}
